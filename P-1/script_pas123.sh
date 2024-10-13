@@ -19,3 +19,26 @@ NR != 1 {
     }
     print $0 missatge
 }' sortidapas2.csv > sortidapas3.csv
+
+count=0
+while read -r linia
+do
+    if [ $count -eq 0 ]; then
+        echo "$linia,Rlikes,Rdislikes" > sortidapas4.csv
+        count=$((count+1))
+    else
+        likes=$(cut -d "," -f 9 <<< "$linia")
+        dislikes=$(cut -d "," -f 10 <<< "$linia")
+        views=$(cut -d "," -f 8 <<< "$linia")
+        if [ $views -eq 0 ]; then
+            rlikes=0
+            rdislikes=0
+        else
+            rlikes=$((likes*100/views))
+            rdislikes=$((dislikes*100/views))
+        fi
+        echo "$linia,$rlikes,$rdislikes" >> sortidapas4.csv
+    fi
+done < sortidapas3.csv
+
+    
